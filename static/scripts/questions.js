@@ -1,5 +1,6 @@
 
 var timerEl = document.querySelector('#time');
+var questionEl = document.querySelector('#question-title')
 
 var quizQuestions = [
     { 
@@ -83,25 +84,30 @@ var quizQuestions = [
         answers: 'setItem()'
     }
 ]
+var questionComplete = [];
+var totalTime = 100;
+
 
 function setTimer(time) {
     var timeInterval = setInterval(() => {
         time--;
         timerEl.textContent = time;
-
         if (time === 0) {
             clearInterval(timeInterval);
         }
+    }, 1000)
+}
 
-    }, 10)
-
+function getQuestion() {
+    var currQuestion = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
+    questionComplete.push(currQuestion.num);
+    return currQuestion.question
 }
 
 document.querySelector('#start').addEventListener('click', (event) => {
-    var totalTime = 100;
-    var numQuestions = 10;
-    var score;
     setTimer(totalTime);
+
+    var question = getQuestion();
 
 })
 
