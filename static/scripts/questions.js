@@ -1,8 +1,9 @@
 
 var timerEl = document.querySelector('#time');
-var questionEl = document.querySelector('#question-title')
-var questionContainerEl = document.querySelector('#questions')
-var startScreenEle = document.querySelector('#start-screen')
+var questionEl = document.querySelector('#question-title');
+var questionContainerEl = document.querySelector('#questions');
+var startScreenEle = document.querySelector('#start-screen');
+var choicesEl = document.querySelector('#choices');
 
 var quizQuestions = [
     { 
@@ -101,9 +102,9 @@ function setTimer(time) {
 }
 
 function getQuestion() {
-    var currQuestion = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
-    questionComplete.push(currQuestion.num);
-    return currQuestion.question
+    var questionObj = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
+    questionComplete.push(questionObj.num);
+    return questionObj;
 }
 
 document.querySelector('#start').addEventListener('click', (event) => {
@@ -112,7 +113,13 @@ document.querySelector('#start').addEventListener('click', (event) => {
     questionContainerEl.className = '';
     startScreenEle.style.display = 'none';
 
-    questionEl.textContent = getQuestion()
+    var currQuestion = getQuestion();
+    questionEl.textContent = currQuestion.question;
+    for (var i = 0; i < currQuestion.options.length; i++) {
+        var el = document.createElement('div')
+        el.append(currQuestion.options[i])
+        choicesEl.append(el);
+    }
 })
 
 
