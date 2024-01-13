@@ -1,6 +1,8 @@
 
 var timerEl = document.querySelector('#time');
 var questionEl = document.querySelector('#question-title')
+var questionContainerEl = document.querySelector('#questions')
+var startScreenEle = document.querySelector('#start-screen')
 
 var quizQuestions = [
     { 
@@ -91,7 +93,7 @@ var totalTime = 100;
 function setTimer(time) {
     var timeInterval = setInterval(() => {
         time--;
-        timerEl.textContent = time;
+        timerEl.textContent = `${time} seconds`;
         if (time === 0) {
             clearInterval(timeInterval);
         }
@@ -107,8 +109,10 @@ function getQuestion() {
 document.querySelector('#start').addEventListener('click', (event) => {
     setTimer(totalTime);
 
-    var question = getQuestion();
+    questionContainerEl.className = '';
+    startScreenEle.style.display = 'none';
 
+    questionEl.textContent = getQuestion()
 })
 
 
