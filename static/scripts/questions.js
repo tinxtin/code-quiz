@@ -2,92 +2,109 @@
 var timerEl = document.querySelector('#time');
 var questionEl = document.querySelector('#question-title');
 var questionContainerEl = document.querySelector('#questions');
-var startScreenEle = document.querySelector('#start-screen');
-var choicesEl = document.querySelector('#choices');
+var startScreenEl = document.querySelector('#start-screen');
+var answerBtnEl = document.querySelector('#choices');
 var startEl = document.querySelector('#start');
 
 var quizQuestions = [
     { 
         num: 1,
         question: 'What keyword is used to create a JavaScript variable?',
-        options: [
-            'variable', 'const', 'var', 'create'
-        ],
-        answer: 'var'
+        answer: [
+            {text: 'variable', correct: false},
+            {text: 'const', correct: false},
+            {text: 'var', correct: true},
+            {text: 'create', correct: false},
+        ]
     },
     {
         num: 2,
         question: 'How do you call the function "helloWorld"?',
-        options: [
-            'call helloWorld()', 'helloWorld()', 'helloWorld', 'function helloWorld()'
-        ],
-        answer: 'helloWorld()'
+        answer: [
+            {text: 'call helloWorld()', correct: false},
+            {text: 'helloWorld()', correct: true},
+            {text: 'helloWorld', correct: false},
+            {text: 'function helloWorld()', correct: false},
+        ]
     },
     { 
         num: 3,
         question: 'What css property is used to change the text color of an element?',
-        options: [
-            'fontcolor', 'textcolor', 'none of these', 'color'
-        ],
-        answer: 'color'
+        answer: [
+            {text: 'fontcolor', correct: false},
+            {text: 'textcolor', correct: false},
+            {text: 'none of these', correct: false},
+            {text: 'color', correct: true},
+        ]
     },
     { 
         num: 4,
         question: 'What HTML tag is used to link a JavaScript file',
-        options: [
-            'script', 'link', 'javascript', 'meta'
-        ],
-        answer: 'script'
+        answer: [
+            {text: 'script', correct: true},
+            {text: 'link', correct: false},
+            {text: 'javascript', correct: false},
+            {text: 'meta', correct: false},
+        ]
     },
     { 
         num: 5,
         question: 'If var x = [], what will "typeof(x)" return?',
-        options: [
-            'array', 'object', 'undefined', 'variable'
-        ],
-        answer: 'object'
+        answer: [
+            {text: 'array', correct: false},
+            {text: 'object', correct: true},
+            {text: 'undefined', correct: false},
+            {text: 'variable', correct: false},
+        ]
     },
     {
         num: 6,
         question: 'Which symbol is used as css selector to select "class" attribute?',
-        options: [
-            '#', '>', '.', '[]'
-        ],
-        answer: '.'
+        answer: [
+            {text: '#', correct: false},
+            {text: '>', correct: false},
+            {text: '.', correct: true},
+            {text: '[]', correct: false},
+        ]
     },
     { 
         num: 7,
         question: 'HTML IDs can only be used once.',
-        options: [
-            'True', 'False'
-        ],
-        answer: 'True'
+        answer: [
+            {text: 'True', correct: true},
+            {text: 'False', correct: false}
+        ]
     },
     { 
         num: 8,
         question: 'JavaScript localstorage can only store strings.',
-        options: [
-            'True', 'False'
-        ],
-        answer: 'True'
+        answer: [
+            {text: 'True', correct: true},
+            {text: 'False', correct: false}
+        ]
     },
     { 
         num: 9,
         question: '"DOM" is short for?',
-        options: [
-            'Document Object Model', 'Document Only Model', 'None of these', 'Dominos'
-        ],
-        answer: 'Document Object Model'
+        answer: [
+            {text: 'Document Object Model', correct: true},
+            {text: 'Document Only Model', correct: false},
+            {text: 'None of these', correct: false},
+            {text: 'Dominos', correct: false},
+        ]
     },
     {
         num: 10,
         question: 'Which method is to used to initially store data in localstorage?',
-        options: [
-            'getItem()', 'push()', 'setItem()', 'set()'
-        ],
-        answer: 'setItem()'
+        answer: [
+            {text: 'getItem()', correct: false},
+            {text: 'push()', correct: false},
+            {text: 'setItem()', correct: false},
+            {text: 'set()', correct: false},
+        ]
     }
 ]
+
 var storeQuestion = [];
 var totalTime = 100;
 
@@ -102,29 +119,34 @@ function setTimer(time) {
     }, 1000)
 }
 
-function getQuestions() {
-    var questionObj = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
-    storeQuestion.push(questionObj.num);
-    questionEl.textContent = questionObj.question;
+function getQuestion() {
+    var currQuestion = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
+    storeQuestion.push(currQuestion.num);
+    questionEl.textContent = currQuestion.question;
 
-    for (var i = 0; i < questionObj.options.length; i++) {
-        var el = document.createElement('button')
-        el.setAttribute('data-index', i);
-        el.textContent = questionObj.options[i];
-        choicesEl.append(el);
-    }
+    currQuestion.answer.forEach(answer => {
+        var button = document.createElement('button')
+        button.textContent = answer.text;
+        answerBtnEl.append(button);
 
-    return questionObj;
+        if (answer.correct) {
+            button.dataset.correct = answer.correct
+        }
+    })
+
+
 }
 
-startEl.addEventListener('click', () => {
+function startQuiz() {
     questionContainerEl.className = '';
-    startScreenEle.style.display = 'none';
-
+    startScreenEl.style.display = 'none';
     setTimer(totalTime);
-    
-    getQuestions();
-})
+    getQuestion();
+}
+
+startEl.addEventListener('click', () => startQuiz());
+
+
 
 
 
