@@ -120,6 +120,7 @@ function setTimer(time) {
 }
 
 function getQuestion() {
+    resetState();
     var currQuestion = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
     storeQuestion.push(currQuestion.num);
     questionEl.textContent = currQuestion.question;
@@ -136,6 +137,12 @@ function getQuestion() {
     })
 }
 
+function resetState() {
+    while (answerBtnEl.firstChild) {   
+        answerBtnEl.removeChild(answerBtnEl.firstChild);
+    }
+}
+
 function selectAns(e) {
     console.log('test')
     var selectedBtn = e.target;
@@ -143,7 +150,6 @@ function selectAns(e) {
     if (isCorrect) {
         getQuestion();
     } else {
-        totalTime -= 10;
         getQuestion();
     }
 }
