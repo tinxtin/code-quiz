@@ -127,14 +127,25 @@ function getQuestion() {
     currQuestion.answer.forEach(answer => {
         var button = document.createElement('button')
         button.textContent = answer.text;
-        answerBtnEl.append(button);
+        answerBtnEl.appendChild(button);
 
         if (answer.correct) {
             button.dataset.correct = answer.correct
         }
+        button.addEventListener('click', selectAns)
     })
+}
 
-
+function selectAns(e) {
+    console.log('test')
+    var selectedBtn = e.target;
+    var isCorrect = selectedBtn.dataset.correct === 'true';
+    if (isCorrect) {
+        getQuestion();
+    } else {
+        totalTime -= 10;
+        getQuestion();
+    }
 }
 
 function startQuiz() {
@@ -144,7 +155,7 @@ function startQuiz() {
     getQuestion();
 }
 
-startEl.addEventListener('click', () => startQuiz());
+startEl.addEventListener('click', startQuiz);
 
 
 
