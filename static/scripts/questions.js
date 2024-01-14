@@ -4,6 +4,7 @@ var questionEl = document.querySelector('#question-title');
 var questionContainerEl = document.querySelector('#questions');
 var startScreenEle = document.querySelector('#start-screen');
 var choicesEl = document.querySelector('#choices');
+var startEl = document.querySelector('#start');
 
 var quizQuestions = [
     { 
@@ -12,7 +13,7 @@ var quizQuestions = [
         options: [
             'variable', 'const', 'var', 'create'
         ],
-        answers: 'var'
+        answer: 'var'
     },
     {
         num: 2,
@@ -20,7 +21,7 @@ var quizQuestions = [
         options: [
             'call helloWorld()', 'helloWorld()', 'helloWorld', 'function helloWorld()'
         ],
-        answers: 'helloWorld()'
+        answer: 'helloWorld()'
     },
     { 
         num: 3,
@@ -28,7 +29,7 @@ var quizQuestions = [
         options: [
             'fontcolor', 'textcolor', 'none of these', 'color'
         ],
-        answers: 'color'
+        answer: 'color'
     },
     { 
         num: 4,
@@ -36,7 +37,7 @@ var quizQuestions = [
         options: [
             'script', 'link', 'javascript', 'meta'
         ],
-        answers: 'script'
+        answer: 'script'
     },
     { 
         num: 5,
@@ -44,7 +45,7 @@ var quizQuestions = [
         options: [
             'array', 'object', 'undefined', 'variable'
         ],
-        answers: 'object'
+        answer: 'object'
     },
     {
         num: 6,
@@ -52,7 +53,7 @@ var quizQuestions = [
         options: [
             '#', '>', '.', '[]'
         ],
-        answers: '.'
+        answer: '.'
     },
     { 
         num: 7,
@@ -60,7 +61,7 @@ var quizQuestions = [
         options: [
             'True', 'False'
         ],
-        answers: 'True'
+        answer: 'True'
     },
     { 
         num: 8,
@@ -68,7 +69,7 @@ var quizQuestions = [
         options: [
             'True', 'False'
         ],
-        answers: 'True'
+        answer: 'True'
     },
     { 
         num: 9,
@@ -76,7 +77,7 @@ var quizQuestions = [
         options: [
             'Document Object Model', 'Document Only Model', 'None of these', 'Dominos'
         ],
-        answers: 'Document Object Model'
+        answer: 'Document Object Model'
     },
     {
         num: 10,
@@ -84,10 +85,10 @@ var quizQuestions = [
         options: [
             'getItem()', 'push()', 'setItem()', 'set()'
         ],
-        answers: 'setItem()'
+        answer: 'setItem()'
     }
 ]
-var questionComplete = [];
+var storeQuestion = [];
 var totalTime = 100;
 
 
@@ -101,25 +102,30 @@ function setTimer(time) {
     }, 1000)
 }
 
-function getQuestion() {
+function getQuestions() {
     var questionObj = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
-    questionComplete.push(questionObj.num);
+    storeQuestion.push(questionObj.num);
+    questionEl.textContent = questionObj.question;
+
+    for (var i = 0; i < questionObj.options.length; i++) {
+        var el = document.createElement('button')
+        el.setAttribute('data-index', i);
+        el.textContent = questionObj.options[i];
+        choicesEl.append(el);
+    }
+
     return questionObj;
 }
 
-document.querySelector('#start').addEventListener('click', (event) => {
-    setTimer(totalTime);
-
+startEl.addEventListener('click', () => {
     questionContainerEl.className = '';
     startScreenEle.style.display = 'none';
 
-    var currQuestion = getQuestion();
-    questionEl.textContent = currQuestion.question;
-    for (var i = 0; i < currQuestion.options.length; i++) {
-        var el = document.createElement('div')
-        el.append(currQuestion.options[i])
-        choicesEl.append(el);
-    }
+    setTimer(totalTime);
+    
+    getQuestions();
 })
+
+
 
 
