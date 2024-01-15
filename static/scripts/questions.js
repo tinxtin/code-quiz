@@ -108,15 +108,17 @@ var quizQuestions = [
 
 var storeQuestion = [];
 var totalTime = 100;
+var clearTimeId;
 
 function setTimer(time) {
-    time--;
-    timerEl.textContent = `${time} seconds`;
-    var timeOut = setTimeout(setTimer, 1000, time);
-
     if (time === 0) {
-        clearTimeout(timeOut)
+        clearInterval(clearTimeId);
     }
+    clearTimeId = window.setInterval(() => {
+        time--;
+        timerEl.textContent = time;
+        console.log(time)
+    }, 1000)
 }
 
 function getQuestion() {
@@ -131,11 +133,17 @@ function getQuestion() {
         answerBtnEl.appendChild(button);
 
         if (answer.correct) {
-            button.dataset.correct = answer.correct
+            button.dataset.correct = answer.correct;
         }
         button.addEventListener('click', (e) => {
             var result = selectAns(e);
             showFeedback(result);
+            if (!result) {
+                var timeDeduction = 10
+                var currTime = timerEl.textContent - timeDeduction;
+                clearInterval(clearTimeId);
+                setTimer(currTime);
+            }
         });
     })
 }
@@ -150,11 +158,9 @@ function selectAns(e) {
     var selectedBtn = e.target;
     var isCorrect = selectedBtn.dataset.correct === 'true';
     if (isCorrect) {
-        console.log('correct')
         getQuestion();
         return true;
     } else {
-        console.log('incorrect')
         getQuestion();
         return false;
     }
