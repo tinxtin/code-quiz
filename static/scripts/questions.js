@@ -107,6 +107,7 @@ var quizQuestions = [
 ]
 
 var storeQuestion = [];
+var correctAns = 0;
 var totalTime = 100;
 var clearTimeId;
 
@@ -114,19 +115,25 @@ function setTimer(time) {
     if (time === 0) {
         clearInterval(clearTimeId);
     }
+    timerEl.textContent = time;
     clearTimeId = window.setInterval(() => {
         time--;
         timerEl.textContent = time;
-        console.log(time)
     }, 1000)
 }
 
 function getQuestion() {
     resetState();
     var currQuestion = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
-    storeQuestion.push(currQuestion.num);
+    if (storeQuestion.includes(currQuestion.num)) {
+        console.log('num ' + currQuestion.num)
+        getQuestion();
+        return;
+    } else {
+        storeQuestion.push(currQuestion.num);
+        console.log('store ' + storeQuestion)
+    }
     questionEl.textContent = currQuestion.question;
-
     currQuestion.answer.forEach(answer => {
         var button = document.createElement('button')
         button.textContent = answer.text;
@@ -139,7 +146,7 @@ function getQuestion() {
             var result = selectAns(e);
             showFeedback(result);
             if (!result) {
-                var timeDeduction = 10
+                var timeDeduction = 10;
                 var currTime = timerEl.textContent - timeDeduction;
                 clearInterval(clearTimeId);
                 setTimer(currTime);
@@ -158,6 +165,7 @@ function selectAns(e) {
     var selectedBtn = e.target;
     var isCorrect = selectedBtn.dataset.correct === 'true';
     if (isCorrect) {
+        correctAns++;
         getQuestion();
         return true;
     } else {
@@ -169,9 +177,11 @@ function selectAns(e) {
 function showFeedback(result) {
     feedbackEl.classList.remove('hide');
     var feedback = document.createElement('div');
-
-    if (result) {feedback.append('Correct')} else {feedback.append('Incorrect');}
-
+    if (result) {
+        feedback.append('Correct');
+    } else {
+        feedback.append('Incorrect');
+    }
     feedbackEl.appendChild(feedback);
     setTimeout(() => {
         feedbackEl.removeChild(feedbackEl.firstChild);
