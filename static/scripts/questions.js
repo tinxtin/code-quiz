@@ -135,7 +135,7 @@ function getQuestion() {
         }
         button.addEventListener('click', (e) => {
             var result = selectAns(e);
-            showResult(result);
+            showFeedback(result);
         });
     })
 }
@@ -160,27 +160,17 @@ function selectAns(e) {
     }
 }
 
-function showResult(result) {
-    if (result) {
-        feedbackEl.classList.remove('hide');
-        var feedback = document.createElement('div');
-        feedback.append('Correct');
-        feedbackEl.appendChild(feedback);
-        setTimeout(() => {
-            feedbackEl.removeChild(feedbackEl.firstChild);
-            feedbackEl.classList.add('hide');
-        }, 1000)
-    } else {
-        feedbackEl.classList.remove('hide');
-        var feedback = document.createElement('div');
-        feedback.append('Incorrect');
-        feedbackEl.appendChild(feedback);
-        setTimeout(() => {
-            feedbackEl.removeChild(feedbackEl.firstChild);
-            feedbackEl.classList.add('hide');
-        }, 1000)
-    }  
+function showFeedback(result) {
+    feedbackEl.classList.remove('hide');
+    var feedback = document.createElement('div');
 
+    if (result) {feedback.append('Correct')} else {feedback.append('Incorrect');}
+
+    feedbackEl.appendChild(feedback);
+    setTimeout(() => {
+        feedbackEl.removeChild(feedbackEl.firstChild);
+        feedbackEl.classList.add('hide');
+    }, 1000)
 }
 
 function startQuiz() {
