@@ -5,6 +5,7 @@ var questionContainerEl = document.querySelector('#questions');
 var startScreenEl = document.querySelector('#start-screen');
 var answerBtnEl = document.querySelector('#choices');
 var startEl = document.querySelector('#start');
+var feedbackEl = document.querySelector('#feedback');
 
 var quizQuestions = [
     { 
@@ -108,15 +109,14 @@ var quizQuestions = [
 var storeQuestion = [];
 var totalTime = 100;
 
-
 function setTimer(time) {
-    var timeInterval = setInterval(() => {
-        time--;
-        timerEl.textContent = `${time} seconds`;
-        if (time === 0) {
-            clearInterval(timeInterval);
-        }
-    }, 1000)
+    time--;
+    timerEl.textContent = `${time} seconds`;
+    var timeOut = setTimeout(setTimer, 1000, time);
+
+    if (time === 0) {
+        clearTimeout(timeOut)
+    }
 }
 
 function getQuestion() {
@@ -133,25 +133,54 @@ function getQuestion() {
         if (answer.correct) {
             button.dataset.correct = answer.correct
         }
-        button.addEventListener('click', selectAns)
+        button.addEventListener('click', (e) => {
+            var result = selectAns(e);
+            showResult(result);
+        });
     })
 }
 
 function resetState() {
     while (answerBtnEl.firstChild) {   
         answerBtnEl.removeChild(answerBtnEl.firstChild);
-    }
+    };
 }
 
 function selectAns(e) {
-    console.log('test')
     var selectedBtn = e.target;
     var isCorrect = selectedBtn.dataset.correct === 'true';
     if (isCorrect) {
+        console.log('correct')
         getQuestion();
+        return true;
     } else {
+        console.log('incorrect')
         getQuestion();
+        return false;
     }
+}
+
+function showResult(result) {
+    if (result) {
+        feedbackEl.classList.remove('hide');
+        var feedback = document.createElement('div');
+        feedback.append('Correct');
+        feedbackEl.appendChild(feedback);
+        setTimeout(() => {
+            feedbackEl.removeChild(feedbackEl.firstChild);
+            feedbackEl.classList.add('hide');
+        }, 1000)
+    } else {
+        feedbackEl.classList.remove('hide');
+        var feedback = document.createElement('div');
+        feedback.append('Incorrect');
+        feedbackEl.appendChild(feedback);
+        setTimeout(() => {
+            feedbackEl.removeChild(feedbackEl.firstChild);
+            feedbackEl.classList.add('hide');
+        }, 1000)
+    }  
+
 }
 
 function startQuiz() {
