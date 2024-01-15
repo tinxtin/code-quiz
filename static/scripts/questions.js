@@ -120,16 +120,22 @@ function startQuiz() {
 }
 
 function setTimer(time) {
+    if (time === 0) {
+        clearInterval(clearTimeId);
+        timerEl.textContent = 0;
+        endQuiz(time);
+        return
+    }
     timerEl.textContent = time;
     clearTimeId = window.setInterval(() => {
         time--;
         timerEl.textContent = time;
-        if (time === 0) {
-            endQuiz(time);
+        if (time <= 0) {
             clearInterval(clearTimeId);
+            endQuiz(time);
             return;
         }
-    }, 1000)
+    }, 100)
 }
 
 function getQuestion() {
@@ -158,8 +164,14 @@ function getQuestion() {
             showFeedback(result);
             if (!result) {
                 var timeDeduction = 10;
-                var currTime = timerEl.textContent - timeDeduction;
-                clearInterval(clearTimeId);
+                var currTime = parseInt(timerEl.textContent);
+                if (currTime <= 10) {
+                    currTime -= currTime;
+                    clearInterval(clearTimeId);
+                } else {
+                    currTime -= timeDeduction;
+                    clearInterval(clearTimeId);
+                }
                 setTimer(currTime);
             }
         });
