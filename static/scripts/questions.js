@@ -7,6 +7,7 @@ var answerBtnEl = document.querySelector('#choices');
 var startEl = document.querySelector('#start');
 var feedbackEl = document.querySelector('#feedback');
 var endScreenEl = document.querySelector('#end-screen');
+var submitBtnEl = document.querySelector('#submit');
 
 var quizQuestions = [
     { 
@@ -109,7 +110,7 @@ var quizQuestions = [
 
 var storeQuestion = [];
 var correctAns = 0;
-var totalTime = 100;
+var totalTime = 10;
 var clearTimeId;
 
 function startQuiz() {
@@ -217,6 +218,17 @@ function endQuiz(score) {
     endScreenEl.classList.remove('hide');
     var finalScore = document.querySelector('#final-score');
     finalScore.textContent = score;
+
+    submitBtnEl.addEventListener('click', () => {
+        submitScore(score)
+    })
+}
+
+function submitScore(score) {
+    var initial = document.querySelector('#initials').value;
+    var keyNum = localStorage.length + 1
+    localStorage.setItem(keyNum, `${initial} - ${score}`)
+    window.location.href = '/highscores.html'
 }
 
 startEl.addEventListener('click', startQuiz);
