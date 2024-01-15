@@ -6,6 +6,7 @@ var startScreenEl = document.querySelector('#start-screen');
 var answerBtnEl = document.querySelector('#choices');
 var startEl = document.querySelector('#start');
 var feedbackEl = document.querySelector('#feedback');
+var endScreenEl = document.querySelector('#end-screen');
 
 var quizQuestions = [
     { 
@@ -100,7 +101,7 @@ var quizQuestions = [
         answer: [
             {text: 'getItem()', correct: false},
             {text: 'push()', correct: false},
-            {text: 'setItem()', correct: false},
+            {text: 'setItem()', correct: true},
             {text: 'set()', correct: false},
         ]
     }
@@ -111,27 +112,37 @@ var correctAns = 0;
 var totalTime = 100;
 var clearTimeId;
 
+function startQuiz() {
+    questionContainerEl.className = '';
+    startScreenEl.style.display = 'none';
+    setTimer(totalTime);
+    getQuestion();
+}
+
 function setTimer(time) {
-    if (time === 0) {
-        clearInterval(clearTimeId);
-    }
     timerEl.textContent = time;
     clearTimeId = window.setInterval(() => {
         time--;
         timerEl.textContent = time;
+        if (time === 0) {
+            endQuiz(time);
+            clearInterval(clearTimeId);
+            return;
+        }
     }, 1000)
 }
 
 function getQuestion() {
     resetState();
     var currQuestion = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
-    if (storeQuestion.includes(currQuestion.num)) {
-        console.log('num ' + currQuestion.num)
+    if (storeQuestion.length === quizQuestions.length) {
+        clearInterval(clearTimeId);
+        endQuiz(timerEl.textContent);
+    } else if (storeQuestion.includes(currQuestion.num)) {
         getQuestion();
         return;
     } else {
         storeQuestion.push(currQuestion.num);
-        console.log('store ' + storeQuestion)
     }
     questionEl.textContent = currQuestion.question;
     currQuestion.answer.forEach(answer => {
@@ -189,11 +200,11 @@ function showFeedback(result) {
     }, 1000)
 }
 
-function startQuiz() {
-    questionContainerEl.className = '';
-    startScreenEl.style.display = 'none';
-    setTimer(totalTime);
-    getQuestion();
+function endQuiz(score) {
+    questionContainerEl.classList.add('hide');
+    endScreenEl.classList.remove('hide');
+    var finalScore = document.querySelector('#final-score');
+    finalScore.textContent = score;
 }
 
 startEl.addEventListener('click', startQuiz);
