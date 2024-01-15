@@ -110,7 +110,7 @@ var quizQuestions = [
 
 var storeQuestion = [];
 var correctAns = 0;
-var totalTime = 10;
+var totalTime = 100;
 var clearTimeId;
 
 function startQuiz() {
@@ -136,7 +136,7 @@ function setTimer(time) {
             endQuiz(time);
             return;
         }
-    }, 100)
+    }, 1000)
 }
 
 function getQuestion() {
@@ -189,10 +189,13 @@ function selectAns(e) {
     var selectedBtn = e.target;
     var isCorrect = selectedBtn.dataset.correct === 'true';
     if (isCorrect) {
-        correctAns++;
+        var correctSound = new Audio('./sfx/correct.wav');
+        correctSound.play();
         getQuestion();
         return true;
     } else {
+        var incorrectSound = new Audio('./sfx/incorrect.wav');
+        incorrectSound.play();
         getQuestion();
         return false;
     }
