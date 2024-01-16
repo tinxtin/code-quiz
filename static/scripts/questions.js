@@ -9,6 +9,7 @@ var feedbackEl = document.querySelector('#feedback');
 var endScreenEl = document.querySelector('#end-screen');
 var submitBtnEl = document.querySelector('#submit');
 
+// global variables.
 var quizQuestions = [
     { 
         num: 1,
@@ -107,12 +108,11 @@ var quizQuestions = [
         ]
     }
 ]
-
 var storeQuestion = [];
-var correctAns = 0;
 var totalTime = 100;
 var clearTimeId;
 
+// this initiates the quiz.
 function startQuiz() {
     questionContainerEl.className = '';
     startScreenEl.style.display = 'none';
@@ -120,6 +120,7 @@ function startQuiz() {
     getQuestion();
 }
 
+// start timer and ends the quiz if timer reaches 0.
 function setTimer(time) {
     if (time === 0) {
         clearInterval(clearTimeId);
@@ -139,18 +140,17 @@ function setTimer(time) {
     }, 1000)
 }
 
+// return random question and displays it on the browser and deals with time deduction.
 function getQuestion() {
     resetState();
     var currQuestion = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
-    if (storeQuestion.length === quizQuestions.length) {
-        clearInterval(clearTimeId);
-        endQuiz(timerEl.textContent);
-    } else if (storeQuestion.includes(currQuestion.num)) {
+    if (storeQuestion.includes(currQuestion.num)) {
         getQuestion();
         return;
     } else {
         storeQuestion.push(currQuestion.num);
     }
+    console.log(storeQuestion.length)
     questionEl.textContent = currQuestion.question;
     currQuestion.answer.forEach(answer => {
         var button = document.createElement('button')
@@ -162,29 +162,37 @@ function getQuestion() {
         }
         button.addEventListener('click', (e) => {
             var result = selectAns(e);
-            showFeedback(result);
             if (!result) {
                 var timeDeduction = 10;
                 var currTime = parseInt(timerEl.textContent);
                 if (currTime <= 10) {
                     currTime -= currTime;
-                    clearInterval(clearTimeId);
+                    endQuiz(currTime);
+                } else if (storeQuestion.length === quizQuestions.length) {
+                    currTime -= timeDeduction;
+                    clearInterval(clearTimeId)
                 } else {
                     currTime -= timeDeduction;
                     clearInterval(clearTimeId);
                 }
                 setTimer(currTime);
             }
+            if (storeQuestion.length === quizQuestions.length) {
+                endQuiz(timerEl.textContent);
+            }
+            showFeedback(result);
         });
     })
 }
 
+// removes previous question.
 function resetState() {
     while (answerBtnEl.firstChild) {   
         answerBtnEl.removeChild(answerBtnEl.firstChild);
     };
 }
 
+// checks if the answer chosen is the correct answer and plays sound effects.
 function selectAns(e) {
     var selectedBtn = e.target;
     var isCorrect = selectedBtn.dataset.correct === 'true';
@@ -201,6 +209,7 @@ function selectAns(e) {
     }
 }
 
+// displays if the question is correct/incorrect.
 function showFeedback(result) {
     feedbackEl.classList.remove('hide');
     var feedback = document.createElement('div');
@@ -216,7 +225,9 @@ function showFeedback(result) {
     }, 1000)
 }
 
+// called when time reaches 0, this displays the end score board.
 function endQuiz(score) {
+    clearInterval(clearTimeId);
     questionContainerEl.classList.add('hide');
     endScreenEl.classList.remove('hide');
     var finalScore = document.querySelector('#final-score');
@@ -227,6 +238,7 @@ function endQuiz(score) {
     })
 }
 
+// takes user input and stores it in the localstorage.
 function submitScore(score) {
     var initial = document.querySelector('#initials').value;
     var keyNum = localStorage.length + 1
