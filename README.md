@@ -35,4 +35,4 @@ UI of highscore table.
 
 ## Deployed URL
 
-URL: 
+URL: https://tinxtin.github.io/code-quiz/ 
